@@ -61,6 +61,46 @@
     #tokenListContainer::-webkit-scrollbar { width:6px; }
     #tokenListContainer::-webkit-scrollbar-thumb { background:#0ff; border-radius:3px; }
     #tokenListContainer::-webkit-scrollbar-track { background:#222; border-radius:3px; }
+
+    /* Header flex izkārtojums */
+.site-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Logo izmērs */
+.site-header .logo {
+  height: 60px;
+  width: auto;
+}
+
+/* Teksta daļa */
+.site-header .header-text {
+  text-align: center;
+}
+
+/* Virsraksta gradient */
+.site-header h1 {
+  margin: 0;
+  font-size: 36px;
+  line-height: 1;
+  background: linear-gradient(90deg, #ffffff, #aaaaaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Apakšvirsraksts */
+.site-header .subtitle {
+  margin-top: 4px;
+  color: #9fb0c3;
+  font-size: 18px;
+}
+
   </style>
 </head>
 
