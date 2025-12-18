@@ -36,6 +36,40 @@
     #infoText { font-family:'Inter',Arial,sans-serif; white-space: nowrap; margin-left:6px; font-size:16px; font-weight:600; }
     #accountDisplay { width:100%; word-break:break-word; margin-top:8px; font-size:16px; text-align:center; }
 
+    .horizon-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.horizon-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.horizon-btn.primary {
+  background: linear-gradient(90deg,#4a90e2,#9013fe);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+.horizon-btn.secondary {
+  background: rgba(255,255,255,0.08);
+  color: #0ff;
+  border: 1px solid rgba(0,255,255,0.3);
+}
+
+.horizon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.7);
+}
+
+    
     #tokenListContainer {
       display:none;
       position:absolute;
@@ -110,6 +144,15 @@
 
     <section class="snapshot-container" aria-label="Snapshot">
       <canvas id="snapshotCanvas" width="1920" height="1080" aria-label="Visualization canvas"></canvas>
+      <div class="horizon-actions">
+  <a href="GENESIS_NFT_LINK" target="_blank" class="horizon-btn secondary">
+    Genesis NFT
+  </a>
+  <a href="ACCESS_NFT_LINK" target="_blank" class="horizon-btn primary">
+    Piekļuves NFT
+  </a>
+</div>
+
       <div id="fullscreenIcon" role="button" tabindex="0" aria-label="Toggle fullscreen">⤢ <span id="fullscreenText">Fullscreen</span></div>
       <div id="toggleInfoIcon" role="button" tabindex="0" aria-label="Toggle info">ℹ <span id="infoText">Info</span></div>
 
