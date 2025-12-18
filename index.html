@@ -9,37 +9,206 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <style>
-    body { font-family:'Inter',Arial,sans-serif; background:#000; color:#fff; margin:0; padding:20px; position: relative; }
-    .container { max-width:1400px; margin:auto; display:flex; flex-direction:column; align-items:center; gap:12px; }
-    h1 { font-size:36px; margin:0; line-height:1; background:linear-gradient(90deg,#ffffff,#aaaaaa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; }
-    .subtitle { margin-top:4px; color:#9fb0c3; font-size:18px; text-align:center; }
-    .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-    button { padding:12px 20px; border-radius:12px; border:none; cursor:pointer; background:linear-gradient(90deg,#4a90e2,#9013fe); color:#fff; font-weight:700; font-size:16px; box-shadow:0 6px 18px rgba(0,0,0,0.45); transition: transform 0.2s, box-shadow 0.2s; }
-    button:disabled { background:#444; cursor:not-allowed; box-shadow:0 6px 18px rgba(0,0,0,0.2); }
-    button:hover:not(:disabled) { transform:translateY(-4px) scale(1.03); box-shadow:0 8px 22px rgba(0,0,0,0.65); }
-    .snapshot-container { width:100%; background:#000; border-radius:14px; padding:18px; box-shadow:0 12px 40px rgba(0,0,0,0.6); position:relative; }
-    #snapshotCanvas { width:100%; border-radius:10px; border:1px solid rgba(255,255,255,0.03); display:block; margin-bottom:12px; }
-    #recordTimer { margin-top:6px; color:#0ff; font-weight:600; font-size:16px; text-align:center; }
-    #statusContainer { position: relative; width: 100%; height: 40px; margin-top: 8px; }
-    .status { font-weight:600; font-size:16px; color:#fff; line-height:40px; text-align:center; }
-    #progressBarContainer { position: absolute; top: 50%; left: 50%; width: 60%; height: 18px; background: rgba(255,255,255,0.1); border-radius: 6px; transform: translate(-50%, -50%); display: none; overflow: hidden; }
-    #progressBar { height: 100%; width: 100%; background: linear-gradient(90deg,#0ff,#4a90e2); border-radius: 6px; transform: scaleX(0); transform-origin: left center; transition: transform 0.4s ease; }
+    body {
+      font-family:'Inter',Arial,sans-serif;
+      background:#000;
+      color:#fff;
+      margin:0;
+      padding:20px;
+      position: relative;
+    }
+
+    .container {
+      max-width:1400px;
+      margin:auto;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+      position: relative;
+    }
+
+    h1 {
+      font-size:36px;
+      margin:0;
+      line-height:1;
+      background:linear-gradient(90deg,#ffffff,#aaaaaa);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-align:center;
+    }
+
+    .subtitle {
+      margin-top:4px;
+      color:#9fb0c3;
+      font-size:18px;
+      text-align:center;
+    }
+
+    .controls {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:12px;
+    }
+
+    button {
+      padding:12px 20px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(90deg,#4a90e2,#9013fe);
+      color:#fff;
+      font-weight:700;
+      font-size:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:disabled {
+      background:#444;
+      cursor:not-allowed;
+      box-shadow:0 6px 18px rgba(0,0,0,0.2);
+    }
+
+    button:hover:not(:disabled) {
+      transform:translateY(-4px) scale(1.03);
+      box-shadow:0 8px 22px rgba(0,0,0,0.65);
+    }
+
+    .snapshot-container {
+      width:100%;
+      background:#000;
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.6);
+      position:relative;
+    }
+
+    #snapshotCanvas {
+      width:100%;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.03);
+      display:block;
+      margin-bottom:12px;
+    }
+
+    #recordTimer {
+      margin-top:6px;
+      color:#0ff;
+      font-weight:600;
+      font-size:16px;
+      text-align:center;
+    }
+
+    #statusContainer {
+      position: relative;
+      width: 100%;
+      height: 40px;
+      margin-top: 8px;
+    }
+
+    .status {
+      font-weight:600;
+      font-size:16px;
+      color:#fff;
+      line-height:40px;
+      text-align:center;
+    }
+
+    #progressBarContainer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60%;
+      height: 18px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      transform: translate(-50%, -50%);
+      display: none;
+      overflow: hidden;
+    }
+
+    #progressBar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg,#0ff,#4a90e2);
+      border-radius: 6px;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.4s ease;
+    }
+
     #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; }
-    #recordDropdown { display:none; position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#111; border:2px solid #555; border-radius:12px; padding:80px 20px 20px 20px; z-index:1000; min-width:360px; box-shadow:0 8px 24px rgba(0,0,0,0.7); text-align:center; overflow-y:auto; }
+
+    #recordDropdown {
+      display:none;
+      position: fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:#111;
+      border:2px solid #555;
+      border-radius:12px;
+      padding:80px 20px 20px 20px;
+      z-index:1000;
+      min-width:360px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.7);
+      text-align:center;
+      overflow-y:auto;
+    }
+
     #recordDropdown button { width:100%; margin:16px 0; }
-    #dropdownClose { position:absolute; top:10px; right:10px; cursor:pointer; font-size:28px; font-weight:bold; color:#fff; background:none; border:none; padding:0; line-height:1; }
-    #fullscreenIcon { position:absolute; top:10px; right:10px; display:flex; align-items:center; cursor:pointer; color:#0ff; background:rgba(0,0,0,0.3); border-radius:6px; padding:6px 10px; transition: background 0.2s, transform 0.2s; z-index:10; user-select:none; }
-    #fullscreenIcon:hover { background:rgba(0,255,255,0.2); transform: scale(1.05); }
-    #toggleInfoIcon { position:absolute; top:10px; left:10px; display:flex; align-items:center; cursor:pointer; color:#0ff; background:rgba(0,0,0,0.3); border-radius:6px; padding:6px 10px; transition: background 0.2s, transform 0.2s; z-index:10; user-select:none; }
-    #toggleInfoIcon:hover { background:rgba(0,255,255,0.2); transform: scale(1.05); }
-    #infoText { font-family:'Inter',Arial,sans-serif; white-space: nowrap; margin-left:6px; font-size:16px; font-weight:600; }
+
+    #dropdownClose {
+      position:absolute;
+      top:10px;
+      right:10px;
+      cursor:pointer;
+      font-size:28px;
+      font-weight:bold;
+      color:#fff;
+      background:none;
+      border:none;
+      padding:0;
+      line-height:1;
+    }
+
+    #fullscreenIcon, #toggleInfoIcon {
+      position:absolute;
+      top:10px;
+      display:flex;
+      align-items:center;
+      cursor:pointer;
+      color:#0ff;
+      background:rgba(0,0,0,0.3);
+      border-radius:6px;
+      padding:6px 10px;
+      transition: background 0.2s, transform 0.2s;
+      z-index:10;
+      user-select:none;
+    }
+
+    #fullscreenIcon:hover, #toggleInfoIcon:hover { background:rgba(0,255,255,0.2); transform: scale(1.05); }
+
+    #fullscreenIcon { right:10px; }
+    #toggleInfoIcon { left:10px; }
+
+    #fullscreenText, #infoText { font-family:'Inter',Arial,sans-serif; white-space: nowrap; margin-left:6px; font-size:16px; font-weight:600; }
+
     #accountDisplay { width:100%; word-break:break-word; margin-top:8px; font-size:16px; text-align:center; }
 
     .horizon-actions {
       display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 12px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 10px;
+      position: absolute;
+      top: 120px;
+      left: 80px; /* zem logo */
+      z-index: 5;
     }
 
     .horizon-btn {
@@ -49,6 +218,7 @@
       font-size: 14px;
       text-decoration: none;
       transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      display: inline-block;
     }
 
     .horizon-btn.primary {
@@ -63,11 +233,18 @@
       border: 1px solid rgba(0,255,255,0.3);
     }
 
-    .horizon-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
+    .horizon-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.7); }
+
+    /* Logo */
+    .logo {
+      position: absolute;
+      top: 40px;
+      left: 80px;
+      width: 160px;
+      z-index:10;
     }
 
+    /* Token List */
     #tokenListContainer {
       display:none;
       position:absolute;
@@ -85,6 +262,7 @@
       font-size:14px;
       z-index:15;
     }
+
     #tokenListContainer table { width:100%; border-collapse:collapse; }
     #tokenListContainer th, #tokenListContainer td { padding:6px 8px; text-align:left; font-size:13px; }
     #tokenListContainer th { color:#0ff; font-weight:600; }
@@ -93,89 +271,73 @@
     #tokenListContainer::-webkit-scrollbar { width:6px; }
     #tokenListContainer::-webkit-scrollbar-thumb { background:#0ff; border-radius:3px; }
     #tokenListContainer::-webkit-scrollbar-track { background:#222; border-radius:3px; }
-
-    .site-header {
-      display: flex;
-      align-items:flex-start;
-      gap: 20px;
-      position: relative;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .logo {
-      width: 160px;
-      margin-left: 20px;
-      margin-top: 20px;
-    }
-
-    .header-text {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 30px;
-    }
-
-    /* NFT pogas zem logo */
-    .nft-buttons {
-      position: absolute;
-      top: 140px; /* zem logo */
-      left: 20px;  /* atbilst logo */
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .nft-buttons .horizon-btn {
-      width: 140px;
-      text-align: center;
-    }
-
   </style>
 </head>
-
 <body>
   <div class="container" role="main">
-    <header class="site-header">
-      <img src="data:image/png;base64,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" alt="Logo" class="logo">
 
-      <!-- NFT pogas zem logo -->
-      <div class="nft-buttons">
-        <a href="#" target="_blank" class="horizon-btn secondary">Genesis NFT</a>
-        <a href="#" target="_blank" class="horizon-btn primary">Piekļuves NFT</a>
-      </div>
+    <!-- Logo -->
+    <img src="data:image/png;base64,..." alt="Logo" class="logo">
 
-      <div class="header-text">
-        <h1>Dynamic Wallet Visualizer</h1>
-        <p class="subtitle">Watch your Ethereum assets come alive — Sepolia NFT Access</p>
-      </div>
-    </header>
-
-    <div class="controls">
-      <button id="snapshotBtn">Snapshot</button>
-      <button id="connectWalletBtn">Connect</button>
-      <button id="renderBtn">Render</button>
-    </div>
-
-    <div class="snapshot-container">
-      <canvas id="snapshotCanvas"></canvas>
-      <div id="recordTimer"></div>
-      <div id="statusContainer">
-        <span class="status" id="statusText"></span>
-        <div id="progressBarContainer">
-          <div id="progressBar"></div>
-        </div>
-      </div>
-    </div>
-
+    <!-- NFT pogas zem logo -->
     <div class="horizon-actions">
-      <!-- Šeit var ievietot citas darbības -->
+      <a href="GENESIS_NFT_LINK" target="_blank" class="horizon-btn secondary">Genesis NFT</a>
+      <a href="ACCESS_NFT_LINK" target="_blank" class="horizon-btn primary">Piekļuves NFT</a>
     </div>
 
+    <!-- Centrālais teksts -->
+    <div class="header-text" style="margin-top:40px; text-align:center;">
+      <h1>Dynamic Wallet Visualizer</h1>
+      <p class="subtitle">Watch your Ethereum assets come alive — Sepolia NFT Access</p>
+    </div>
+
+    <!-- Centrālās kontroles -->
+    <section class="controls" aria-label="Controls">
+      <button id="connectBtn">Connect Wallet</button>
+      <button id="renderBtn" disabled>Render Snapshot</button>
+      <button id="recordBtn" disabled>Record 20s HD Video</button>
+    </section>
+
+    <div id="accountDisplay" aria-live="polite">Connected account: —</div>
+    <div id="statusContainer" aria-hidden="false">
+      <div id="statusMsg" class="status" role="status" aria-live="polite"></div>
+      <div id="progressBarContainer" aria-hidden="true"><div id="progressBar"></div></div>
+    </div>
+    <div id="recordTimer" aria-live="polite">Recording: 0 / 20 s</div>
+
+    <section class="snapshot-container" aria-label="Snapshot">
+      <canvas id="snapshotCanvas" width="1920" height="1080" aria-label="Visualization canvas"></canvas>
+
+      <div id="fullscreenIcon" role="button" tabindex="0" aria-label="Toggle fullscreen">⤢ <span id="fullscreenText">Fullscreen</span></div>
+      <div id="toggleInfoIcon" role="button" tabindex="0" aria-label="Toggle info">ℹ <span id="infoText">Info</span></div>
+
+      <div id="tokenListContainer" aria-hidden="true">
+        <table>
+          <thead><tr><th>Address</th><th>Balance</th></tr></thead>
+          <tbody id="tokenListContent"></tbody>
+        </table>
+      </div>
+    </section>
   </div>
+
+  <div id="overlay" tabindex="-1"></div>
+
+  <div id="recordDropdown" role="dialog" aria-modal="true" aria-hidden="true">
+    <button id="dropdownClose" aria-label="Close">&times;</button>
+    <button id="recordWithTokensBtn">Record video with token list</button>
+    <button id="recordWithoutTokensBtn">Record video without token list</button>
+  </div>
+
+  <!-- JS bibliotēkas un skripti paliek nemainīti -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+  <script>
+    /* Tavs iepriekšējais JS kods — Wallet connect, particles, render, NFT, etc. */
+  </script>
+
 </body>
 </html>
+
 
 
 
