@@ -1,165 +1,185 @@
 <!DOCTYPE html>
 <html lang="lv">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dynamic Wallet Visualizer — Sepolia NFT Access</title>
-<style>
-  body { font-family:'Inter',Arial,sans-serif; background:#000; color:#fff; margin:0; padding:20px; }
-  .container { max-width:1400px; margin:auto; display:flex; flex-direction:column; align-items:center; gap:12px; }
-  h1 { font-size:36px; margin:0; line-height:1; background:linear-gradient(90deg,#ffffff,#aaaaaa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; }
-  .subtitle { margin-top:4px; color:#9fb0c3; font-size:18px; text-align:center; }
-  .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  button { padding:12px 20px; border-radius:12px; border:none; cursor:pointer; background:linear-gradient(90deg,#4a90e2,#9013fe); color:#fff; font-weight:700; font-size:16px; box-shadow:0 6px 18px rgba(0,0,0,0.45); transition: transform 0.2s, box-shadow 0.2s; }
-  button:disabled { background:#444; cursor:not-allowed; box-shadow:0 6px 18px rgba(0,0,0,0.2); }
-  button:hover:not(:disabled) { transform:translateY(-4px) scale(1.03); box-shadow:0 8px 22px rgba(0,0,0,0.65); }
-  #snapshotCanvas { width:100%; border-radius:10px; border:1px solid rgba(255,255,255,0.03); display:block; margin-bottom:12px; }
-  #recordTimer { margin-top:6px; color:#0ff; font-weight:600; font-size:16px; text-align:center; }
-  #progressBarContainer { width:60%; height:18px; background:rgba(255,255,255,0.1); border-radius:6px; overflow:hidden; margin-top:8px; }
-  #progressBar { height:100%; width:100%; background: linear-gradient(90deg,#0ff,#4a90e2); transform: scaleX(0); transform-origin:left center; transition: transform 0.2s linear; }
-  #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; }
-  #recordDropdown { display:none; position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#111; border:2px solid #555; border-radius:12px; padding:20px; z-index:1000; min-width:360px; box-shadow:0 8px 24px rgba(0,0,0,0.7); text-align:center; }
-  #dropdownClose { position:absolute; top:10px; right:10px; cursor:pointer; font-size:28px; font-weight:bold; color:#fff; background:none; border:none; }
-  .site-header { display:flex; justify-content:space-between; width:100%; position:relative; }
-  .logo { width:230px; margin:20px; }
-  .header-buttons { display:flex; gap:12px; margin:20px; }
-  .header-buttons button { width:44px; height:44px; border-radius:50%; background-color:#fff; color:#000; font-weight:700; font-size:18px; border:none; cursor:pointer; }
-  .header-buttons button:hover { transform: scale(1.1); box-shadow:0 4px 12px rgba(255,255,255,0.5); }
-  .dropdown-button { margin:8px 0; width:80%; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Wallet Visualizer — Sepolia NFT Access</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family:'Inter',Arial,sans-serif; background:#000; color:#fff; margin:0; padding:20px; position: relative; }
+    .container { max-width:1400px; margin:auto; display:flex; flex-direction:column; align-items:center; gap:12px; }
+    h1 { font-size:36px; margin:0; line-height:1; background:linear-gradient(90deg,#ffffff,#aaaaaa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; }
+    .subtitle { margin-top:4px; color:#9fb0c3; font-size:18px; text-align:center; }
+    .controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    button { padding:12px 20px; border-radius:12px; border:none; cursor:pointer; background:linear-gradient(90deg,#4a90e2,#9013fe); color:#fff; font-weight:700; font-size:16px; box-shadow:0 6px 18px rgba(0,0,0,0.45); transition: transform 0.2s, box-shadow 0.2s; }
+    button:disabled { background:#444; cursor:not-allowed; box-shadow:0 6px 18px rgba(0,0,0,0.2); }
+    button:hover:not(:disabled) { transform:translateY(-4px) scale(1.03); box-shadow:0 8px 22px rgba(0,0,0,0.65); }
+    .snapshot-container { width:100%; background:#000; border-radius:14px; padding:18px; box-shadow:0 12px 40px rgba(0,0,0,0.6); position:relative; }
+    #snapshotCanvas { width:100%; border-radius:10px; border:1px solid rgba(255,255,255,0.03); display:block; margin-bottom:12px; }
+    #recordTimer { margin-top:6px; color:#0ff; font-weight:600; font-size:16px; text-align:center; }
+    #statusContainer { position: relative; width: 100%; height: 40px; margin-top: 8px; }
+    .status { font-weight:600; font-size:16px; color:#fff; line-height:40px; text-align:center; }
+    #progressBarContainer { position: absolute; top: 50%; left: 50%; width: 60%; height: 18px; background: rgba(255,255,255,0.1); border-radius: 6px; transform: translate(-50%, -50%); display: none; overflow: hidden; }
+    #progressBar { height: 100%; width: 100%; background: linear-gradient(90deg,#0ff,#4a90e2); border-radius: 6px; transform: scaleX(0); transform-origin: left center; transition: transform 0.4s ease; }
+    #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; }
+    #recordDropdown { display:none; position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#111; border:2px solid #555; border-radius:12px; padding:80px 20px 20px 20px; z-index:1000; min-width:360px; box-shadow:0 8px 24px rgba(0,0,0,0.7); text-align:center; overflow-y:auto; }
+    #recordDropdown button { width:100%; margin:16px 0; }
+    #dropdownClose { position:absolute; top:10px; right:10px; cursor:pointer; font-size:28px; font-weight:bold; color:#fff; background:none; border:none; padding:0; line-height:1; }
+    #fullscreenIcon { position:absolute; top:10px; right:10px; display:flex; align-items:center; cursor:pointer; color:#0ff; background:rgba(0,0,0,0.3); border-radius:6px; padding:6px 10px; transition: background 0.2s, transform 0.2s; z-index:10; user-select:none; }
+    #fullscreenIcon:hover { background:rgba(0,255,255,0.2); transform: scale(1.05); }
+    #fullscreenText { font-family:'Inter',Arial,sans-serif; white-space: nowrap; margin-left:6px; font-size:16px; font-weight:600; }
+    #toggleInfoIcon { position:absolute; top:10px; left:10px; display:flex; align-items:center; cursor:pointer; color:#0ff; background:rgba(0,0,0,0.3); border-radius:6px; padding:6px 10px; transition: background 0.2s, transform 0.2s; z-index:10; user-select:none; }
+    #toggleInfoIcon:hover { background:rgba(0,255,255,0.2); transform: scale(1.05); }
+    #infoText { font-family:'Inter',Arial,sans-serif; white-space: nowrap; margin-left:6px; font-size:16px; font-weight:600; }
+    #accountDisplay { width:100%; word-break:break-word; margin-top:8px; font-size:16px; text-align:center; }
+
+    .horizon-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .horizon-btn {
+      padding: 10px 18px;
+      border-radius: 50%; /* apaļas pogas */
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+    }
+
+    .horizon-btn.primary {
+      background: linear-gradient(90deg,#4a90e2,#9013fe);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+
+    .horizon-btn.secondary {
+      background: rgba(255,255,255,0.08);
+      color: #0ff;
+      border: 1px solid rgba(0,255,255,0.3);
+    }
+
+    .horizon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
+    }
+
+    #tokenListContainer {
+      display:none;
+      position:absolute;
+      top:80px;
+      left:10px;
+      max-height:150px;
+      width:90%;
+      max-width:576px;
+      background:rgba(0,0,0,0.5);
+      border-radius:9px;
+      overflow-y:auto;
+      padding:10px;
+      color:#fff;
+      font-family:'Inter',Arial,sans-serif;
+      font-size:14px;
+      z-index:15;
+    }
+    #tokenListContainer table { width:100%; border-collapse:collapse; }
+    #tokenListContainer th, #tokenListContainer td { padding:6px 8px; text-align:left; font-size:13px; }
+    #tokenListContainer th { color:#0ff; font-weight:600; }
+    #tokenListContainer tr:nth-child(even) td { background:rgba(255,255,255,0.05); }
+    #tokenListContainer tr:nth-child(odd) td { background:rgba(255,255,255,0.02); }
+    #tokenListContainer::-webkit-scrollbar { width:6px; }
+    #tokenListContainer::-webkit-scrollbar-thumb { background:#0ff; border-radius:3px; }
+    #tokenListContainer::-webkit-scrollbar-track { background:#222; border-radius:3px; }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* nodrošina, ka logo un pogas ir galā */
+      gap: 20px;
+      width: 100%;
+      position: relative;
+    }
+
+    .logo {
+      width: 230px;
+      margin-left: 80px;
+      margin-top: 40px;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 12px;
+      margin-right: 80px;
+      margin-top: 40px;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="container" role="main">
+    <header class="site-header">
 
-<div class="site-header">
-  <img src="logo.png" class="logo" alt="Logo">
-  <div class="header-buttons">
-    <button>A</button>
-    <button>G</button>
+        <img 
+          src="data:image/png;base64,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" 
+          alt="Logo" class="logo"/>
+
+        <div class="header-buttons">
+          <a href="GENESIS_NFT_LINK" target="_blank" class="horizon-btn secondary">A</a>
+          <a href="ACCESS_NFT_LINK" target="_blank" class="horizon-btn primary">G</a>
+        </div>
+
+    </header>
+
+    <h1>Dynamic Wallet Visualizer</h1>
+    <p class="subtitle">Sepolia NFT Access</p>
+
+    <section class="controls">
+      <button id="connectWalletBtn">Connect Wallet</button>
+      <button id="renderSnapshotBtn" disabled>Render Snapshot</button>
+      <button id="recordBtn" disabled>Record 20s HD Video</button>
+    </section>
+
+    <div class="snapshot-container">
+      <canvas id="snapshotCanvas" width="1400" height="784"></canvas>
+      <div id="recordTimer"></div>
+      <div id="statusContainer">
+        <div class="status" id="status"></div>
+        <div id="progressBarContainer">
+          <div id="progressBar"></div>
+        </div>
+      </div>
+      <div id="overlay"></div>
+      <div id="recordDropdown">
+        <button id="dropdownClose">×</button>
+      </div>
+      <div id="fullscreenIcon">
+        <span id="fullscreenText">Full Screen</span>
+      </div>
+      <div id="toggleInfoIcon">
+        <span id="infoText">Info</span>
+      </div>
+      <div id="accountDisplay"></div>
+    </div>
+
+    <div id="tokenListContainer"></div>
+
   </div>
-</div>
 
-<div class="container">
-  <h1>Dynamic Wallet Visualizer</h1>
-  <div class="subtitle">Sepolia NFT Access</div>
-
-  <div class="controls">
-    <button id="connectWalletBtn">Connect Wallet</button>
-    <button id="startBtn">Start</button>
-    <button id="stopBtn">Stop</button>
-    <button id="dropdownBtn">Records</button>
-  </div>
-
-  <canvas id="snapshotCanvas" width="800" height="400"></canvas>
-  <div id="recordTimer">00:00</div>
-
-  <div id="progressBarContainer">
-    <div id="progressBar"></div>
-  </div>
-</div>
-
-<div id="overlay"></div>
-<div id="recordDropdown">
-  <button id="dropdownClose">&times;</button>
-  <p>Choose Recording Option:</p>
-  <button class="dropdown-button" id="recordWithTokensBtn">Record with Tokens</button>
-  <button class="dropdown-button" id="recordWithoutTokensBtn">Record without Tokens</button>
-</div>
-
-<script>
-  // --- Wallet Connect ---
-  const connectWalletBtn = document.getElementById('connectWalletBtn');
-  connectWalletBtn.onclick = () => {
-    alert('Wallet connected!');
-    document.getElementById('accountDisplay')?.remove();
-    const acc = document.createElement('div');
-    acc.id = 'accountDisplay';
-    acc.style.position = 'fixed';
-    acc.style.top = '10px';
-    acc.style.left = '50%';
-    acc.style.transform = 'translateX(-50%)';
-    acc.style.background = '#111';
-    acc.style.padding = '6px 12px';
-    acc.style.borderRadius = '8px';
-    acc.textContent = '0xABC...123';
-    document.body.appendChild(acc);
-  }
-
-  // --- Timer & Progress Bar ---
-  const startBtn = document.getElementById('startBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  const recordTimer = document.getElementById('recordTimer');
-  const progressBar = document.getElementById('progressBar');
-  let timerInterval, progressInterval;
-  let seconds = 0;
-  let progress = 0;
-
-  function updateTimer() {
-    const mins = String(Math.floor(seconds/60)).padStart(2,'0');
-    const secs = String(seconds%60).padStart(2,'0');
-    recordTimer.textContent = mins+':'+secs;
-    seconds++;
-  }
-
-  function updateProgress() {
-    progress += 0.01;
-    progressBar.style.transform = 'scaleX(' + Math.min(progress,1) + ')';
-    if(progress >= 1) clearInterval(progressInterval);
-  }
-
-  function startRecordingSimulation() {
-    clearInterval(timerInterval);
-    clearInterval(progressInterval);
-    seconds = 0; progress = 0;
-    updateTimer();
-    progressBar.style.transform = 'scaleX(0)';
-    timerInterval = setInterval(updateTimer,1000);
-    progressInterval = setInterval(updateProgress,100);
-  }
-
-  startBtn.addEventListener('click', startRecordingSimulation);
-  stopBtn.addEventListener('click', ()=>{
-    clearInterval(timerInterval);
-    clearInterval(progressInterval);
-    seconds=0; progress=0;
-    updateTimer();
-    progressBar.style.transform = 'scaleX(0)';
-  });
-
-  // --- Dropdown ---
-  const dropdownBtn = document.getElementById('dropdownBtn');
-  const recordDropdown = document.getElementById('recordDropdown');
-  const dropdownClose = document.getElementById('dropdownClose');
-  const overlay = document.getElementById('overlay');
-
-  dropdownBtn.onclick = () => {
-    recordDropdown.style.display = 'block';
-    overlay.style.display = 'block';
-  }
-  function closeDropdown() {
-    recordDropdown.style.display = 'none';
-    overlay.style.display = 'none';
-  }
-  dropdownClose.onclick = closeDropdown;
-  overlay.onclick = closeDropdown;
-
-  // Dropdown buttons
-  const recordWithTokensBtn = document.getElementById('recordWithTokensBtn');
-  const recordWithoutTokensBtn = document.getElementById('recordWithoutTokensBtn');
-
-  recordWithTokensBtn.onclick = () => { closeDropdown(); alert('Recording started WITH tokens!'); startRecordingSimulation(); }
-  recordWithoutTokensBtn.onclick = () => { closeDropdown(); alert('Recording started WITHOUT tokens!'); startRecordingSimulation(); }
-
-  // --- Canvas Simulation ---
-  const canvas = document.getElementById('snapshotCanvas');
-  const ctx = canvas.getContext('2d');
-  setInterval(()=>{
-    ctx.fillStyle = 'hsl('+(Math.random()*360)+',50%,50%)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-  },1000);
-</script>
-
+  <script>
+    // Tavi esošie JS skripti šeit (nav mainīti)
+  </script>
 </body>
 </html>
+
 
 
 
