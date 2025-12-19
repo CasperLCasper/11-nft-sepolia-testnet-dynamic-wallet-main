@@ -57,16 +57,42 @@
 }
 
 .horizon-btn.primary {
-  background: linear-gradient(90deg,#4a90e2,#9013fe);
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  background: linear-gradient(180deg, #ffffff, #e0e0e0); /* balts uz gaiši pelēku */
+  color: #000; /* melns teksts */
+  border: 1px solid #ccc; /* viegla apmale */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* ēnojums */
+  border-radius: 12px; /* noapaļoti stūri */
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.horizon-btn.secondary {
-  background: linear-gradient(90deg,#4a90e2,#9013fe);
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+.horizon-btn.primary:hover {
+  background: linear-gradient(180deg, #f5f5f5, #dcdcdc); /* nedaudz tumšāks hover */
+  transform: translateY(-2px) scale(1.03); /* pacel un neliels palielinājums */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45); /* spēcīgāks ēnojums hover */
 }
+
+
+.horizon-btn.primary {
+  background: linear-gradient(180deg, #ffffff, #e0e0e0); /* balts uz gaiši pelēku */
+  color: #000; /* melns teksts */
+  border: 1px solid #ccc; /* viegla apmale */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* ēnojums */
+  border-radius: 12px; /* noapaļoti stūri */
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.horizon-btn.primary:hover {
+  background: linear-gradient(180deg, #f5f5f5, #dcdcdc); /* nedaudz tumšāks hover */
+  transform: translateY(-2px) scale(1.03); /* pacel un neliels palielinājums */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45); /* spēcīgāks ēnojums hover */
+}
+
 
 .horizon-btn:hover {
   transform: translateY(-2px);
