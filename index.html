@@ -21,12 +21,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 20px 0;
     }
 
     .logo {
-      position: absolute;
-      top: 20px;
-      left: 40px;
       width: 230px;
       z-index: 10;
     }
@@ -40,7 +38,6 @@
     .header-actions {
       display: flex;
       gap: 14px;
-      margin-right: 20px;
       position: relative;
       z-index: 10;
     }
@@ -103,19 +100,15 @@
     
     /* Responsive dizains */
     @media (max-width: 768px) {
-      .logo {
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 180px;
-        margin: 0 auto 20px;
-        display: block;
-      }
-      
       .site-header {
         flex-direction: column;
         align-items: center;
         gap: 15px;
+      }
+      
+      .logo {
+        width: 180px;
+        margin: 0 auto;
       }
       
       .header-text {
@@ -124,7 +117,6 @@
       
       .header-actions {
         order: 3;
-        margin-right: 0;
         margin-top: 10px;
       }
       
@@ -135,6 +127,12 @@
       .subtitle {
         font-size: 16px;
       }
+      
+      .nft-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -143,7 +141,7 @@
   <div class="container" role="main">
 
     <header class="site-header">
-      <img src="data:image/png;base64,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" alt="Logo" class="logo" />
+      <img src="data:image/png;base64,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" alt="Logo" class="logo" />
 
       <div class="header-text">
         <h1>Dynamic Wallet Visualizer</h1>
@@ -180,169 +178,6 @@
   <!-- External libs -->
   <script src="https://cdn.jsdelivr.net/npm/ethers@6/dist/ethers.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
-  
-  <script>
-    // Basic JavaScript for interactivity
-    document.addEventListener('DOMContentLoaded', function() {
-      const connectBtn = document.getElementById('connectBtn');
-      const renderBtn = document.getElementById('renderBtn');
-      const recordBtn = document.getElementById('recordBtn');
-      const accountDisplay = document.getElementById('accountDisplay');
-      const fullscreenIcon = document.getElementById('fullscreenIcon');
-      const toggleInfoIcon = document.getElementById('toggleInfoIcon');
-      const tokenListContainer = document.getElementById('tokenListContainer');
-      const canvas = document.getElementById('snapshotCanvas');
-      const statusText = document.getElementById('statusText');
-      const recordTimer = document.getElementById('recordTimer');
-      
-      // Mock wallet connection
-      connectBtn.addEventListener('click', function() {
-        statusText.textContent = 'Connecting to wallet...';
-        
-        // Simulate connection delay
-        setTimeout(() => {
-          const mockAddress = '0x71C7...e5a3';
-          accountDisplay.textContent = `Connected account: ${mockAddress}`;
-          statusText.textContent = 'Wallet connected! Ready to visualize.';
-          
-          // Enable buttons after connection
-          renderBtn.disabled = false;
-          recordBtn.disabled = false;
-          
-          connectBtn.textContent = 'Connected ✓';
-          connectBtn.style.background = 'linear-gradient(90deg, #4CAF50, #45a049)';
-          connectBtn.disabled = true;
-        }, 1500);
-      });
-      
-      // Render snapshot
-      renderBtn.addEventListener('click', function() {
-        statusText.textContent = 'Rendering wallet visualization...';
-        
-        // Draw something on canvas
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#0a0a0a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Add some visual elements
-        ctx.fillStyle = '#4a90e2';
-        ctx.font = 'bold 48px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Wallet Visualization', canvas.width/2, canvas.height/2 - 50);
-        
-        ctx.fillStyle = '#9013fe';
-        ctx.font = '24px Inter, sans-serif';
-        ctx.fillText('Dynamic assets will appear here', canvas.width/2, canvas.height/2 + 20);
-        
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '18px Inter, sans-serif';
-        ctx.fillText('Mock visualization for demonstration', canvas.width/2, canvas.height/2 + 60);
-        
-        statusText.textContent = 'Visualization rendered successfully!';
-      });
-      
-      // Record video
-      let recording = false;
-      let recordSeconds = 0;
-      let recordInterval;
-      
-      recordBtn.addEventListener('click', function() {
-        if (!recording) {
-          recording = true;
-          recordSeconds = 0;
-          recordBtn.textContent = 'Stop Recording';
-          statusText.textContent = 'Recording 20s HD video...';
-          recordTimer.textContent = 'Recording: 0s / 20s';
-          
-          // Update timer
-          recordInterval = setInterval(() => {
-            recordSeconds++;
-            recordTimer.textContent = `Recording: ${recordSeconds}s / 20s`;
-            
-            if (recordSeconds >= 20) {
-              stopRecording();
-            }
-          }, 1000);
-        } else {
-          stopRecording();
-        }
-      });
-      
-      function stopRecording() {
-        clearInterval(recordInterval);
-        recording = false;
-        recordBtn.textContent = 'Record 20s HD Video';
-        statusText.textContent = 'Recording saved!';
-        recordTimer.textContent = 'Recording completed successfully!';
-        
-        // Reset after 3 seconds
-        setTimeout(() => {
-          recordTimer.textContent = '';
-        }, 3000);
-      }
-      
-      // Fullscreen functionality
-      fullscreenIcon.addEventListener('click', function() {
-        if (canvas.requestFullscreen) {
-          canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) {
-          canvas.webkitRequestFullscreen();
-        } else if (canvas.mozRequestFullScreen) {
-          canvas.mozRequestFullScreen();
-        } else if (canvas.msRequestFullscreen) {
-          canvas.msRequestFullscreen();
-        }
-        
-        statusText.textContent = 'Entered fullscreen mode';
-      });
-      
-      // Toggle info panel
-      toggleInfoIcon.addEventListener('click', function() {
-        if (tokenListContainer.style.display === 'block') {
-          tokenListContainer.style.display = 'none';
-          statusText.textContent = 'Info panel closed';
-        } else {
-          tokenListContainer.style.display = 'block';
-          tokenListContainer.innerHTML = `
-            <h3>Wallet Assets Info</h3>
-            <p>• ETH Balance: 2.45 ETH</p>
-            <p>• Sepolia NFTs: 3 items</p>
-            <p>• ERC-20 Tokens: 5 tokens</p>
-            <p>• Last updated: Just now</p>
-            <p><em>This is a demo visualization tool.</em></p>
-          `;
-          statusText.textContent = 'Info panel opened';
-        }
-      });
-      
-      // Add some hover effects for buttons
-      const buttons = document.querySelectorAll('button');
-      buttons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-          if (!this.disabled) {
-            this.style.transform = 'translateY(-4px) scale(1.03)';
-            this.style.boxShadow = '0 8px 22px rgba(0,0,0,0.65)';
-          }
-        });
-        
-        button.addEventListener('mouseleave', function() {
-          if (!this.disabled) {
-            this.style.transform = '';
-            this.style.boxShadow = '';
-          }
-        });
-      });
-      
-      // Initialize canvas with default message
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#4a90e2';
-      ctx.font = 'bold 36px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Connect wallet to visualize assets', canvas.width/2, canvas.height/2);
-    });
-  </script>
 </body>
 </html>
 
