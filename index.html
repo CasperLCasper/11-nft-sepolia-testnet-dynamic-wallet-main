@@ -57,41 +57,53 @@
 }
 
 .horizon-btn.primary {
-  background: linear-gradient(180deg, #ffffff, #e0e0e0); /* balts uz gaiši pelēku */
-  color: #000; /* melns teksts */
-  border: 1px solid #ccc; /* viegla apmale */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* ēnojums */
-  border-radius: 6px; /* noapaļoti stūri */
-  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.28);   /* caurspīdīgs balts */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-size: 15px;
   font-weight: 700;
-  font-size: 14px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+
+  transition: all 0.25s ease;
 }
 
 .horizon-btn.primary:hover {
-  background: linear-gradient(180deg, #f5f5f5, #dcdcdc); /* nedaudz tumšāks hover */
-  transform: translateY(-2px) scale(1.03); /* pacel un neliels palielinājums */
-  box-shadow: 0 8px 20px rgba(0,0,0,0.45); /* spēcīgāks ēnojums hover */
+  background: rgba(255, 255, 255, 0.45);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
 }
 
-
 .horizon-btn.secondary {
-  background: linear-gradient(180deg, #ffffff, #e0e0e0); /* balts uz gaiši pelēku */
-  color: #000; /* melns teksts */
-  border: 1px solid #ccc; /* viegla apmale */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* ēnojums */
-  border-radius: 6px; /* noapaļoti stūri */
-  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.28);   /* caurspīdīgs balts */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  color: #000;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-size: 15px;
   font-weight: 700;
-  font-size: 14px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+
+  transition: all 0.25s ease;
 }
 
 .horizon-btn.secondary:hover {
-  background: linear-gradient(180deg, #f5f5f5, #dcdcdc); /* nedaudz tumšāks hover */
-  transform: translateY(-2px) scale(1.03); /* pacel un neliels palielinājums */
-  box-shadow: 0 8px 20px rgba(0,0,0,0.45); /* spēcīgāks ēnojums hover */
+  background: rgba(255, 255, 255, 0.45);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
 }
+
 
 
 .horizon-btn:hover {
