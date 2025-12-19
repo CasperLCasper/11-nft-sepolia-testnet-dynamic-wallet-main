@@ -43,14 +43,16 @@
       margin-top: 12px;
     }
 
-    .horizon-btn {
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-    }
+    .horizon-actions {
+  position: absolute;      /* ļauj precīzu pozīciju */
+  top: 12px;               /* attālums no augšas */
+  right: 12px;             /* attālums no labās malas */
+  display: flex;           /* horizontāla izvietošana */
+  flex-direction: column;  /* ja vēlies, pogas viena zem otras; ja horizontāli, izdzēs šo rindu */
+  gap: 8px;                /* atstarpe starp pogām */
+  z-index: 20;             /* lai pogas būtu virs kanvas */
+  }
+
 
     .horizon-btn.primary {
       background: linear-gradient(90deg,#4a90e2,#9013fe);
