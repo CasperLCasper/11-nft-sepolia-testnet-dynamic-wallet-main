@@ -16,7 +16,7 @@
   #snapshotCanvas { width:100%; border-radius:10px; border:1px solid rgba(255,255,255,0.03); display:block; margin-bottom:12px; }
   #recordTimer { margin-top:6px; color:#0ff; font-weight:600; font-size:16px; text-align:center; }
   #progressBarContainer { width:60%; height:18px; background:rgba(255,255,255,0.1); border-radius:6px; overflow:hidden; margin-top:8px; }
-  #progressBar { height:100%; width:100%; background: linear-gradient(90deg,#0ff,#4a90e2); transform: scaleX(0); transform-origin:left center; transition: transform 0.4s ease; }
+  #progressBar { height:100%; width:100%; background: linear-gradient(90deg,#0ff,#4a90e2); transform: scaleX(0); transform-origin:left center; transition: transform 0.2s linear; }
   #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; }
   #recordDropdown { display:none; position: fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#111; border:2px solid #555; border-radius:12px; padding:20px; z-index:1000; min-width:360px; box-shadow:0 8px 24px rgba(0,0,0,0.7); text-align:center; }
   #dropdownClose { position:absolute; top:10px; right:10px; cursor:pointer; font-size:28px; font-weight:bold; color:#fff; background:none; border:none; }
@@ -25,6 +25,7 @@
   .header-buttons { display:flex; gap:12px; margin:20px; }
   .header-buttons button { width:44px; height:44px; border-radius:50%; background-color:#fff; color:#000; font-weight:700; font-size:18px; border:none; cursor:pointer; }
   .header-buttons button:hover { transform: scale(1.1); box-shadow:0 4px 12px rgba(255,255,255,0.5); }
+  .dropdown-button { margin:8px 0; width:80%; }
 </style>
 </head>
 <body>
@@ -59,45 +60,107 @@
 <div id="overlay"></div>
 <div id="recordDropdown">
   <button id="dropdownClose">&times;</button>
-  <p>Record Dropdown Content</p>
+  <p>Choose Recording Option:</p>
+  <button class="dropdown-button" id="recordWithTokensBtn">Record with Tokens</button>
+  <button class="dropdown-button" id="recordWithoutTokensBtn">Record without Tokens</button>
 </div>
 
 <script>
-  // Wallet Connect
+  // --- Wallet Connect ---
   const connectWalletBtn = document.getElementById('connectWalletBtn');
-  connectWalletBtn.onclick = () => { alert('Wallet connected!'); document.getElementById('accountDisplay')?.remove(); const acc = document.createElement('div'); acc.id='accountDisplay'; acc.textContent='0xABC...123'; document.body.appendChild(acc); }
+  connectWalletBtn.onclick = () => {
+    alert('Wallet connected!');
+    document.getElementById('accountDisplay')?.remove();
+    const acc = document.createElement('div');
+    acc.id = 'accountDisplay';
+    acc.style.position = 'fixed';
+    acc.style.top = '10px';
+    acc.style.left = '50%';
+    acc.style.transform = 'translateX(-50%)';
+    acc.style.background = '#111';
+    acc.style.padding = '6px 12px';
+    acc.style.borderRadius = '8px';
+    acc.textContent = '0xABC...123';
+    document.body.appendChild(acc);
+  }
 
-  // Timer
+  // --- Timer & Progress Bar ---
   const startBtn = document.getElementById('startBtn');
   const stopBtn = document.getElementById('stopBtn');
   const recordTimer = document.getElementById('recordTimer');
-  let timerInterval;
-  let seconds = 0;
-  function updateTimer() { const mins = String(Math.floor(seconds/60)).padStart(2,'0'); const secs = String(seconds%60).padStart(2,'0'); recordTimer.textContent = mins+':'+secs; seconds++; }
-  startBtn.onclick = () => { clearInterval(timerInterval); timerInterval = setInterval(updateTimer,1000); }
-  stopBtn.onclick = () => { clearInterval(timerInterval); seconds=0; updateTimer(); }
-
-  // Progress Bar
   const progressBar = document.getElementById('progressBar');
-  let progress=0; let progressInterval;
-  startBtn.onclick = () => { clearInterval(progressInterval); progress=0; progressBar.style.transform='scaleX(0)'; progressInterval=setInterval(()=>{ progress+=0.01; progressBar.style.transform='scaleX('+progress+')'; if(progress>=1){ clearInterval(progressInterval); } },100); }
+  let timerInterval, progressInterval;
+  let seconds = 0;
+  let progress = 0;
 
-  // Dropdown
+  function updateTimer() {
+    const mins = String(Math.floor(seconds/60)).padStart(2,'0');
+    const secs = String(seconds%60).padStart(2,'0');
+    recordTimer.textContent = mins+':'+secs;
+    seconds++;
+  }
+
+  function updateProgress() {
+    progress += 0.01;
+    progressBar.style.transform = 'scaleX(' + Math.min(progress,1) + ')';
+    if(progress >= 1) clearInterval(progressInterval);
+  }
+
+  function startRecordingSimulation() {
+    clearInterval(timerInterval);
+    clearInterval(progressInterval);
+    seconds = 0; progress = 0;
+    updateTimer();
+    progressBar.style.transform = 'scaleX(0)';
+    timerInterval = setInterval(updateTimer,1000);
+    progressInterval = setInterval(updateProgress,100);
+  }
+
+  startBtn.addEventListener('click', startRecordingSimulation);
+  stopBtn.addEventListener('click', ()=>{
+    clearInterval(timerInterval);
+    clearInterval(progressInterval);
+    seconds=0; progress=0;
+    updateTimer();
+    progressBar.style.transform = 'scaleX(0)';
+  });
+
+  // --- Dropdown ---
   const dropdownBtn = document.getElementById('dropdownBtn');
   const recordDropdown = document.getElementById('recordDropdown');
   const dropdownClose = document.getElementById('dropdownClose');
-  dropdownBtn.onclick = () => { recordDropdown.style.display='block'; document.getElementById('overlay').style.display='block'; }
-  dropdownClose.onclick = () => { recordDropdown.style.display='none'; document.getElementById('overlay').style.display='none'; }
-  document.getElementById('overlay').onclick = () => { recordDropdown.style.display='none'; document.getElementById('overlay').style.display='none'; }
+  const overlay = document.getElementById('overlay');
 
-  // Canvas Example (just fill with random color)
+  dropdownBtn.onclick = () => {
+    recordDropdown.style.display = 'block';
+    overlay.style.display = 'block';
+  }
+  function closeDropdown() {
+    recordDropdown.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+  dropdownClose.onclick = closeDropdown;
+  overlay.onclick = closeDropdown;
+
+  // Dropdown buttons
+  const recordWithTokensBtn = document.getElementById('recordWithTokensBtn');
+  const recordWithoutTokensBtn = document.getElementById('recordWithoutTokensBtn');
+
+  recordWithTokensBtn.onclick = () => { closeDropdown(); alert('Recording started WITH tokens!'); startRecordingSimulation(); }
+  recordWithoutTokensBtn.onclick = () => { closeDropdown(); alert('Recording started WITHOUT tokens!'); startRecordingSimulation(); }
+
+  // --- Canvas Simulation ---
   const canvas = document.getElementById('snapshotCanvas');
   const ctx = canvas.getContext('2d');
-  setInterval(()=>{ ctx.fillStyle = 'hsl('+(Math.random()*360)+',50%,50%)'; ctx.fillRect(0,0,canvas.width,canvas.height); },1000);
+  setInterval(()=>{
+    ctx.fillStyle = 'hsl('+(Math.random()*360)+',50%,50%)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+  },1000);
 </script>
 
 </body>
 </html>
+
 
 
 
