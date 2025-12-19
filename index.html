@@ -37,11 +37,15 @@
     #accountDisplay { width:100%; word-break:break-word; margin-top:8px; font-size:16px; text-align:center; }
 
     .horizon-actions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 12px;
+  position: absolute;      /* ļauj precīzu pozīciju */
+  top: 12px;               /* attālums no augšas */
+  right: 12px;             /* attālums no labās malas */
+  display: flex;           /* horizontāla izvietošana */
+  flex-direction: column;  /* ja vēlies, pogas viena zem otras; ja horizontāli, izdzēs šo rindu */
+  gap: 8px;                /* atstarpe starp pogām */
+  z-index: 20;             /* lai pogas būtu virs kanvas */
 }
+
 
 .horizon-btn {
   padding: 10px 18px;
